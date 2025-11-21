@@ -1,7 +1,7 @@
 /**
- * 数値配列の合計を計算します
- * @param {number[]} arr - 合計を計算する数値の配列
- * @returns {number} 配列内の全数値の合計値
+ * Calculates the sum of all numbers in an array
+ * @param {number[]} arr - Array of numbers to sum
+ * @returns {number} The total sum of all numbers in the array
  */
 export function sumNumbers(arr) {
   let total = 0;
@@ -12,9 +12,9 @@ export function sumNumbers(arr) {
 }
 
 /**
- * 数値配列の平均値を計算します
- * @param {number[]} arr - 平均値を計算する数値の配列
- * @returns {number} 配列の平均値。空配列の場合は0を返す
+ * Calculates the average (arithmetic mean) of numbers in an array
+ * @param {number[]} arr - Array of numbers to calculate average from
+ * @returns {number} The average value of the array, or 0 if the array is empty
  */
 export function average(arr) {
   if (arr.length === 0) return 0;
