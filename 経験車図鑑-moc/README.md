@@ -23,6 +23,11 @@
    - 経験入力（見た、乗った、運転した、所持した）
    - メモ入力（任意）
    - 登録完了
+4. **経験車図鑑（一覧・詳細・編集・削除）**
+   - 経験履歴一覧表示（`/experiences` ページ）
+   - 経験詳細表示（車種情報、経験種別、ポイント、メモ、登録日時）
+   - 経験の編集機能（経験種別、メモの変更）
+   - 経験の削除機能
 
 ## 使用技術一覧
 
@@ -252,7 +257,7 @@ npm install
 
 ## API エンドポイント一覧
 
-バックエンドは http://localhost:4000 で起動し、以下の4つのAPIエンドポイントを提供します。
+バックエンドは http://localhost:4000 で起動し、以下の8つのAPIエンドポイントを提供します。
 
 ### 1. GET /api/makers
 
@@ -400,6 +405,165 @@ curl -X POST http://localhost:4000/api/experience \
 curl http://localhost:4000/api/score
 ```
 
+---
+
+### 5. GET /api/experience
+
+**概要**: ユーザーの全経験履歴を取得（車の詳細情報を含む）
+
+**リクエスト**: なし
+
+**レスポンス**:
+```json
+{
+  "experiences": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "car_id": 62,
+      "experience_type": "owned",
+      "points": 100,
+      "note": "素晴らしい車でした",
+      "created_at": "2025-11-21 09:34:36",
+      "maker_name": "トヨタ",
+      "model_name": "2000GT",
+      "segment": "クラシックスポーツ",
+      "rarity": 10
+    }
+  ]
+}
+```
+
+**レスポンスフィールド**:
+- `id`: 経験ID
+- `user_id`: ユーザーID
+- `car_id`: 車ID
+- `experience_type`: 経験種別（saw, rode, drove, owned）
+- `points`: 獲得ポイント
+- `note`: メモ
+- `created_at`: 登録日時
+- `maker_name`: メーカー名
+- `model_name`: 車種名
+- `segment`: セグメント
+- `rarity`: レアリティ
+
+**使用例**:
+```bash
+curl http://localhost:4000/api/experience
+```
+
+---
+
+### 6. GET /api/experience/:id
+
+**概要**: 特定の経験の詳細情報を取得
+
+**リクエストパラメータ**:
+- `id` (必須): 経験ID
+
+**レスポンス**:
+```json
+{
+  "experience": {
+    "id": 1,
+    "user_id": 1,
+    "car_id": 62,
+    "experience_type": "owned",
+    "points": 100,
+    "note": "素晴らしい車でした",
+    "created_at": "2025-11-21 09:34:36",
+    "maker_name": "トヨタ",
+    "model_name": "2000GT",
+    "segment": "クラシックスポーツ",
+    "rarity": 10
+  }
+}
+```
+
+**使用例**:
+```bash
+curl http://localhost:4000/api/experience/1
+```
+
+---
+
+### 7. PUT /api/experience/:id
+
+**概要**: 既存の経験を更新（経験種別やメモを変更）
+
+**リクエストパラメータ**:
+- `id` (必須): 経験ID
+
+**リクエストボディ**:
+```json
+{
+  "experience_type": "owned",
+  "note": "更新したメモ"
+}
+```
+
+**パラメータ**:
+- `car_id` (任意): 車ID（変更する場合）
+- `experience_type` (任意): 経験種別（saw, rode, drove, owned）
+- `note` (任意): メモ
+
+**レスポンス**:
+```json
+{
+  "experience": {
+    "id": 1,
+    "user_id": 1,
+    "car_id": 62,
+    "experience_type": "owned",
+    "points": 100,
+    "note": "更新したメモ",
+    "created_at": "2025-11-21 09:34:36"
+  }
+}
+```
+
+**使用例**:
+```bash
+curl -X PUT http://localhost:4000/api/experience/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "experience_type": "owned",
+    "note": "更新したメモ"
+  }'
+```
+
+**注意事項**:
+- 経験種別を変更すると、ポイントが自動的に再計算されます
+- 指定しなかったフィールドは既存の値が保持されます
+
+---
+
+### 8. DELETE /api/experience/:id
+
+**概要**: 既存の経験を削除
+
+**リクエストパラメータ**:
+- `id` (必須): 経験ID
+
+**リクエスト**: なし
+
+**レスポンス**:
+```json
+{
+  "message": "Experience deleted successfully",
+  "id": 1
+}
+```
+
+**使用例**:
+```bash
+curl -X DELETE http://localhost:4000/api/experience/1
+```
+
+**注意事項**:
+- 削除した経験は復元できません
+- 削除後、スコアは自動的に再計算されます
+
 ## シードデータ
 
 初期データとして以下が登録されています：
@@ -421,8 +585,8 @@ curl http://localhost:4000/api/score
 - [ ] **検索機能**: 車種名やメーカー名での検索
 - [ ] **フィルタ機能**: レアリティ、セグメント、経験種別でのフィルタリング
 - [ ] **ソート機能**: 車種一覧をレアリティ順、名前順でソート
-- [ ] **経験履歴表示**: 登録した経験の一覧表示
-- [ ] **経験の編集・削除**: 登録済み経験の編集・削除機能
+- [x] **経験履歴表示**: 登録した経験の一覧表示（実装済み - `/experiences` ページ）
+- [x] **経験の編集・削除**: 登録済み経験の編集・削除機能（実装済み - 詳細ページから編集・削除可能）
 - [ ] **図鑑管理機能**: 経験した車の一覧表示（図鑑ビュー）
 - [ ] **遊び方画面**: アプリの使い方を説明する画面の実装
 - [ ] **ランキング機能**: ユーザー間のスコアランキング（マルチユーザー対応後）
