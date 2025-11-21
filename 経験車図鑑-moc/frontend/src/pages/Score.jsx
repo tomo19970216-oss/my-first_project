@@ -57,10 +57,17 @@ function Score() {
         </div>
       </div>
 
-      <div style={{ marginTop: '40px', textAlign: 'center' }}>
+      <div style={{ marginTop: '40px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center' }}>
         <button 
           className="btn btn-primary" 
-          style={{ fontSize: '18px', padding: '14px 28px' }}
+          style={{ fontSize: '18px', padding: '14px 28px', width: '280px' }}
+          onClick={() => navigate('/experiences')}
+        >
+          経験車図鑑を見る
+        </button>
+        <button 
+          className="btn btn-primary" 
+          style={{ fontSize: '18px', padding: '14px 28px', width: '280px' }}
           onClick={() => navigate('/makers')}
         >
           経験を登録する
